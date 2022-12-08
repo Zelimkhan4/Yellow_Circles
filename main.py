@@ -1,29 +1,28 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5 import uic
-from PyQt5.QtGui import QPainter, QBrush
+from PyQt5.QtGui import QPainter, QBrush, QColor
 from PyQt5.QtCore import Qt, QPoint
 from random import randint
 import sys
+from UI import Ui_MainWindow
 
 
-class Window(QMainWindow):
+class Window(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi("UI.ui", self)
-        self.balls = [] # (x, y, r)
+        self.setupUi(self)
+        self.balls = [] # (x, y, r, color)
         self.btn.clicked.connect(self.process)
 
     def process(self):
         r = randint(0, 100)
         x, y = randint(r, self.width() - r), randint(r, self.height() - r)
-        self.balls.append((x, y, r))
+        self.balls.append((x, y, r, QColor(randint(0, 255), randint(0, 255), randint(0, 255))))
         self.update()
 
     def paintEvent(self, a0):
         painter = QPainter(self)
-        painter.setBrush(QBrush(Qt.yellow))
-        for ball in self.balls: # ball - (pos, r)
-            x, y, r = ball
+        for x, y, r, color in self.balls: # ball - (pos, r)
+            painter.setBrush(color)
             painter.drawEllipse(QPoint(x, y), r, r)
 
 
